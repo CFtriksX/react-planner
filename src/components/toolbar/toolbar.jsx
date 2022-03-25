@@ -72,7 +72,8 @@ export default class Toolbar extends Component {
   render() {
 
     let {
-      props: { state, width, height, toolbarButtons, allowProjectFileSupport },
+    // Instantiate mail and load pages function to pass it in load and save button.
+      props: { state, width, height, toolbarButtons, allowProjectFileSupport, mail, loadPages },
       context: { projectActions, viewer3DActions, translator }
     } = this;
 
@@ -91,11 +92,11 @@ export default class Toolbar extends Component {
       },
       {
         index: 1, condition: allowProjectFileSupport,
-        dom: <ToolbarSaveButton state={state} />
+        dom: <ToolbarSaveButton state={state} mail={mail} loadPages={loadPages}/>
       },
       {
         index: 2, condition: allowProjectFileSupport,
-        dom: <ToolbarLoadButton state={state} />
+        dom: <ToolbarLoadButton state={state} mail={mail}/>
       },
       {
         index: 3, condition: true,
