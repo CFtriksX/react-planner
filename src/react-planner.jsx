@@ -56,7 +56,8 @@ class ReactPlanner extends Component {
   }
 
   render() {
-    let {width, height, state, stateExtractor, ...props} = this.props;
+    // Instantiate mail and load pages function to pass it in the toolbar.
+    let {width, height, state, stateExtractor, mail, loadPages, ...props} = this.props;
 
     let contentW = width - toolbarW - sidebarW;
     let toolbarH = height - footerBarH;
@@ -67,7 +68,7 @@ class ReactPlanner extends Component {
 
     return (
       <div style={{...wrapperStyle, height}}>
-        <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} />
+        <Toolbar width={toolbarW} height={toolbarH} state={extractedState} {...props} mail={mail} loadPages={loadPages}/>
         <Content width={contentW} height={contentH} state={extractedState} {...props} onWheel={event => event.preventDefault()} />
         <Sidebar width={sidebarW} height={sidebarH} state={extractedState} {...props} />
         <FooterBar width={width} height={footerBarH} state={extractedState} {...props} />
