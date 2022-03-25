@@ -31,6 +31,13 @@ class Layer{
     return { updatedState: state };
   }
 
+  // This function selects an element without unselectAll.
+  static selectReset( state, layerID ) {
+    state = state.setIn(['scene', 'selectedLayer'], layerID);
+
+    return { updatedState: state };
+  }
+
   static selectElement( state, layerID, elementPrototype, elementID ){
     state = state.setIn(['scene', 'layers', layerID, elementPrototype, elementID, 'selected'], true);
     state = state.updateIn(['scene', 'layers', layerID, 'selected', elementPrototype], elems => elems.push(elementID));
@@ -38,7 +45,12 @@ class Layer{
     return { updatedState: state };
   }
 
+  // BUGFIX:
+  //  When you load map from the database of from the autosave and save without
+  //  touching anything, the saved map will be blank.
+  //  To fix it, I select then unselect all elements in the plan.
   static unselect( state, layerID, elementPrototype, elementID ){
+    state = this.selectReset(state, layerID).updatedState;
     state = state.setIn(['scene', 'layers', layerID, elementPrototype, elementID, 'selected'], false);
     state = state.updateIn(['scene', 'layers', layerID, 'selected', elementPrototype], elems => elems.filter( el => el.id === elementID ));
     return { updatedState: state };

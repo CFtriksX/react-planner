@@ -28,6 +28,9 @@ module.exports = (env, self) => {
     devServer: {
       open: true,
       port: port,
+      proxy: {
+        '/api': 'http://localhost:5000',
+      },
       contentBase: path.join(__dirname, './dist'),
     },
     resolve: {

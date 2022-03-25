@@ -75,23 +75,92 @@ let toolbarButtons = [
   ToolbarScreenshotButton,
 ];
 
-//render
+// This function load React-Planner.
+function callRP(mail, loadPages) {
+  return(
+    <Provider store={store}>
+    <ContainerDimensions>
+      {({width, height}) =>
+        <ReactPlanner
+          catalog={MyCatalog}
+          width={width}
+          height={height}
+          plugins={plugins}
+          toolbarButtons={toolbarButtons}
+          stateExtractor={state => state.get('react-planner')}
+          mail={mail}
+          loadPages={loadPages}
+        />
+      }
+    </ContainerDimensions>
+  </Provider>
+  )
+}
+
+// This function load your menu.
+function callMenu() {
+  return(<p>Salut c'est le menu</p>);
+}
+
+// This function decide which menu you load.
+function WichMenu(props) {
+  switch (props.menuNumber) {
+    case 1:
+      return (callRP(props.mail, props.loadPages));
+    default:
+      return (callMenu());
+  }
+}
+
+//This is a simple menu that renders either React-Planner or a simple email prompt.
+class Menu extends React.Component { 
+  constructor() {
+    super();
+    this.state = {
+      menuNumber: 0,
+      mail : ''
+    };
+    this.handleIdChange = this.handleIdChange.bind(this);
+    this.loadPages = this.loadPages.bind(this);
+  }
+  
+  // This function changes the mail variable and sets the autosave path for React-Planner
+  handleIdChange(event) {
+    this.setState({mail: event.target.value});
+    plugins[1] = PlannerPlugins.Autosave('react-planner_' + event.target.value);
+  }
+
+  // This function changes which pages it need to display, it is not a boolean so you can add an input to have more than 2 pages.
+  // It is passed to React-Planner as a property, You then just need to call it to load another page.
+  loadPages() {
+    this.setState({menuNumber: this.state.menuNumber ? 0 : 1 });
+  }
+  
+  // Make sure to hide everything when you render React-Planner, it does not like to have anything else on the screen.
+  render() {
+    const menuNumber = this.state.menuNumber;
+    const mail = this.state.mail;
+
+    return(
+      <div id='app'>
+        {menuNumber == 0 ?
+        <form onSubmit={ this.loadPages }>
+          <label>Id to load:</label>
+          <input value={mail} onChange={this.handleIdChange} type='string' />
+          <input type='submit' value='Aller à RP' />
+        </form> :
+        null 
+        }
+        <WichMenu menuNumber={menuNumber} mail={mail} loadPages={this.loadPages}/>
+      </div>
+    );
+  }
+}
+
+// The render was changed to a basic menu.
 ReactDOM.render(
   (
-    <Provider store={store}>
-      <ContainerDimensions>
-        {({width, height}) =>
-          <ReactPlanner
-            catalog={MyCatalog}
-            width={width}
-            height={height}
-            plugins={plugins}
-            toolbarButtons={toolbarButtons}
-            stateExtractor={state => state.get('react-planner')}
-          />
-        }
-      </ContainerDimensions>
-    </Provider>
+    <Menu />
   ),
   document.getElementById('app')
 );
