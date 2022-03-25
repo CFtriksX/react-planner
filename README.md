@@ -1,12 +1,14 @@
-# react-planner
+# Flask-react-planner
 
 *react-planner* is a [React][react] component which can be used to draw model buildings. Drag & drop from a catalog of customizable and ready-to-use objects, you can start from 2D wireframes and land on 3D models. As a developer you can provide your users with new objects by adding them to the catalog.
+
+This repos use flask to save and load plans from a database.
 
 [![npm][npm_label]][npm_link]
 ![javascript][js]
 ![react-version][react_version]
 
-## Demo
+## Demo (Without Flask)
 
 [Demo][demo]
 
@@ -14,61 +16,24 @@
 
 ## Usage
 
-``` es6
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {Map} from 'immutable';
-import {createStore} from 'redux';
-import {Provider} from 'react-redux';
-
-//download this demo catalog https://github.com/cvdlab/react-planner/tree/master/demo/src/catalog
-import MyCatalog from './catalog/mycatalog';
-
-import {
-  Models as PlannerModels,
-  reducer as PlannerReducer,
-  ReactPlanner,
-  Plugins as PlannerPlugins,
-} from 'react-planner';
-
-
-//define state
-let AppState = Map({
-  'react-planner': new PlannerModels.State()
-});
-
-//define reducer
-let reducer = (state, action) => {
-  state = state || AppState;
-  state = state.update('react-planner', plannerState => PlannerReducer(plannerState, action));
-  return state;
-};
-
-let store = createStore(reducer, null, window.devToolsExtension ? window.devToolsExtension() : f => f);
-
-let plugins = [
-  PlannerPlugins.Keyboard(),
-  PlannerPlugins.Autosave('react-planner_v0'),
-  PlannerPlugins.ConsoleDebugger(),
-];
-
-//render
-ReactDOM.render(
-  (
-    <Provider store={store}>
-      <ReactPlanner
-        catalog={MyCatalog}
-        width={800}
-        height={600}
-        plugins={plugins}
-        stateExtractor={state => state.get('react-planner')}
-      />
-    </Provider>
-  ),
-  document.getElementById('app')
-);
-
+Go in the api folder, create your virtual env and install the requirements:
 ```
+$ python3.9 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
+In api.py, set your own URI then create your table in your database:
+```
+$ python create_table.py
+```
+Now deactivate your virtual, open two terminal and launch both react and flask:
+```
+$ deactivate
+$ yarn start
+$ yarn start-api
+```
+
+You can now use react-planner with a database !
 
 ## Docs
 
@@ -89,7 +54,7 @@ Developed @ [CVDLAB][cvdlab]
 
 ## Contributing
 
-Your contributions (issues and pull request) are very appreciated!
+ - [CFtriksX](https://github.com/CFtriksX)
 
 ## Contributors
 
